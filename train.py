@@ -22,6 +22,7 @@ import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.inspection import permutation_importance
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
@@ -29,9 +30,11 @@ from sklearn.metrics import (
     classification_report,
     confusion_matrix,
     f1_score,
+    precision_recall_curve,
     precision_score,
     recall_score,
     roc_auc_score,
+    roc_curve,
 )
 from sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split
 from sklearn.pipeline import Pipeline
@@ -162,6 +165,118 @@ def evaluate(model: Pipeline, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
     }
 
 
+def _downsample_curve(xs, ys, n: int = 120) -> list[dict]:
+    idx = np.unique(np.linspace(0, len(xs) - 1, n).astype(int))
+    return [{"x": round(float(xs[i]), 4), "y": round(float(ys[i]), 4)} for i in idx]
+
+
+def _rate_by_bins(df: pd.DataFrame, col: str, bins: list[float], labels: list[str]) -> list[dict]:
+    groups = pd.cut(df[col], bins=bins, labels=labels, include_lowest=True)
+    out = df.groupby(groups, observed=False)[TARGET].agg(["mean", "size"]).reset_index()
+    return [
+        {"rango": str(r[col]), "tasa": round(float(r["mean"]), 4), "sesiones": int(r["size"])}
+        for _, r in out.iterrows()
+    ]
+
+
+def build_insights(
+    df: pd.DataFrame,
+    model: Pipeline,
+    X_test: pd.DataFrame,
+    y_test: pd.Series,
+    comparison: dict,
+) -> dict:
+    """Resúmenes precalculados para las gráficas de la app.
+
+    La app no necesita leer el CSV: todo lo que muestra de los datos y del modelo
+    se guarda aquí, dentro de model.joblib.
+    """
+    proba = model.predict_proba(X_test)[:, 1]
+    fpr, tpr, _ = roc_curve(y_test, proba)
+    prec, rec, _ = precision_recall_curve(y_test, proba)
+
+    # Importancia por permutación: cuánto cae el ROC-AUC si se desordena cada variable
+    perm = permutation_importance(
+        model, X_test, y_test, scoring="roc_auc", n_repeats=5,
+        random_state=RANDOM_STATE, n_jobs=-1,
+    )
+    importance = sorted(
+        [
+            {"variable": f, "importancia": round(float(m), 4), "desv": round(float(sd), 4)}
+            for f, m, sd in zip(FEATURES, perm.importances_mean, perm.importances_std)
+        ],
+        key=lambda d: d["importancia"],
+        reverse=True,
+    )
+
+    # Distribución de probabilidades predichas en prueba, por clase real
+    proba_hist = []
+    edges = np.linspace(0, 1, 21)
+    for cls, name in [(0, "No compra"), (1, "Compra")]:
+        counts, _ = np.histogram(proba[y_test.values == cls], bins=edges)
+        proba_hist += [
+            {"desde": round(float(edges[i]), 2), "hasta": round(float(edges[i + 1]), 2),
+             "clase_real": name, "sesiones": int(c)}
+            for i, c in enumerate(counts)
+        ]
+
+    by_month = (
+        df.groupby("Month")[TARGET].agg(["mean", "size"])
+        .reindex([m for m in MONTH_ORDER if m in set(df["Month"])])
+        .reset_index()
+    )
+    by_visitor = df.groupby("VisitorType")[TARGET].agg(["mean", "size"]).reset_index()
+    by_weekend = df.groupby("Weekend")[TARGET].agg(["mean", "size"]).reset_index()
+
+    def records(frame: pd.DataFrame, key: str) -> list[dict]:
+        return [
+            {"categoria": str(r[key]), "tasa": round(float(r["mean"]), 4), "sesiones": int(r["size"])}
+            for _, r in frame.iterrows()
+        ]
+
+    medians_by_class = (
+        df.groupby(TARGET)[NUMERIC_FEATURES].median().T
+        .rename(columns={0: "no_compra", 1: "compra"})
+    )
+
+    return {
+        "n_rows": int(len(df)),
+        "n_cols": int(df.shape[1]),
+        "positive_rate": round(float(df[TARGET].mean()), 4),
+        "class_counts": {
+            "No compra": int((df[TARGET] == 0).sum()),
+            "Compra": int((df[TARGET] == 1).sum()),
+        },
+        "missing_values": int(df.isna().sum().sum()),
+        "rate_by_month": records(by_month, "Month"),
+        "rate_by_visitor": records(by_visitor, "VisitorType"),
+        "rate_by_weekend": records(by_weekend, "Weekend"),
+        "rate_by_pagevalues": _rate_by_bins(
+            df, "PageValues", [-0.1, 0, 10, 25, 50, 1e9],
+            ["0", "0 – 10", "10 – 25", "25 – 50", "Más de 50"],
+        ),
+        "rate_by_exitrates": _rate_by_bins(
+            df, "ExitRates", [-0.1, 0.01, 0.02, 0.04, 0.08, 1],
+            ["Menos de 1 %", "1 – 2 %", "2 – 4 %", "4 – 8 %", "Más de 8 %"],
+        ),
+        "rate_by_productrelated": _rate_by_bins(
+            df, "ProductRelated", [-1, 5, 15, 30, 60, 1e9],
+            ["0 – 5", "6 – 15", "16 – 30", "31 – 60", "Más de 60"],
+        ),
+        "medians_by_class": {
+            f: {"no_compra": round(float(r["no_compra"]), 4), "compra": round(float(r["compra"]), 4)}
+            for f, r in medians_by_class.iterrows()
+        },
+        "roc_curve": _downsample_curve(fpr, tpr),
+        "pr_curve": _downsample_curve(rec[::-1], prec[::-1]),
+        "proba_hist": proba_hist,
+        "permutation_importance": importance,
+        "model_comparison": comparison,
+        "train_size": int(len(df) - len(X_test)),
+        "test_size": int(len(X_test)),
+    }
+
+
 def train_model(df: pd.DataFrame) -> tuple[dict, dict]:
     X = df[FEATURES].copy()
     y = df[TARGET].copy()
@@ -195,6 +310,16 @@ def train_model(df: pd.DataFrame) -> tuple[dict, dict]:
         if k != "confusion_matrix":
             print(f"{k:<18} {v}")
 
+    # Comparación en prueba de ambos candidatos (solo informativa: la elección ya se hizo con CV)
+    comparison = {}
+    for name, pipe in candidate_models().items():
+        fitted = model if name == best_name else pipe.fit(X_train, y_train)
+        m = evaluate(fitted, X_test, y_test)
+        comparison[name] = {
+            "cv_f1": cv_scores[name],
+            **{k: v for k, v in m.items() if k != "confusion_matrix"},
+        }
+
     # 3. Análisis de sensibilidad: ¿cuánto depende el modelo de PageValues?
     no_pv = [f for f in NUMERIC_FEATURES if f != "PageValues"]
     sens = candidate_models(no_pv)[best_name]
@@ -210,6 +335,15 @@ def train_model(df: pd.DataFrame) -> tuple[dict, dict]:
         for col in CATEGORICAL_FEATURES
     }
     category_options["Month"] = [m for m in MONTH_ORDER if m in category_options["Month"]]
+
+    # Valores de referencia ("sesión típica") para explicar cada predicción en la app
+    reference_values = {
+        **{col: float(df[col].median()) for col in NUMERIC_FEATURES},
+        **{col: str(df[col].mode().iloc[0]) for col in CATEGORICAL_FEATURES},
+    }
+
+    insights = build_insights(df, model, X_test, y_test, comparison)
+    insights["roc_auc_without_pagevalues"] = round(float(sens_auc), 4)
 
     numeric_ranges = {
         col: {
@@ -235,6 +369,8 @@ def train_model(df: pd.DataFrame) -> tuple[dict, dict]:
         "numeric_ranges": numeric_ranges,
         "feature_labels": FEATURE_LABELS,
         "metrics": metrics,
+        "reference_values": reference_values,
+        "insights": insights,
     }
 
     report = {
@@ -247,6 +383,8 @@ def train_model(df: pd.DataFrame) -> tuple[dict, dict]:
         "selected_model": best_name,
         "test_metrics": metrics,
         "roc_auc_without_PageValues": round(float(sens_auc), 4),
+        "test_metrics_by_model": comparison,
+        "permutation_importance_roc_auc": insights["permutation_importance"],
     }
     return artifact, report
 

@@ -45,6 +45,39 @@ Para editar desde el navegador: abrir el archivo en GitHub → ícono de lápiz 
 
 ---
 
+## Ruta usada en esta entrega: Streamlit Cloud + Cloud Shell
+
+Crear la VM exige activar la facturación de Google Cloud, que pide una autorización temporal en una tarjeta. Mientras eso no sea posible, la entrega usa dos servicios gratuitos que cubren lo mismo:
+
+**A. App pública en Streamlit Community Cloud**
+
+1. Entrar a <https://share.streamlit.io> → **Continue with GitHub** → autorizar con permiso de solo lectura.
+2. **Create app** → *Deploy a public app from GitHub*.
+3. Repository `allisonloangorayo-sudo/intencion-compra-streamlit`, branch `main`, main file `app.py`, App URL `intencion-compra`.
+4. **Advanced settings** → Python **3.12** → **Save** → **Deploy**.
+5. Resultado: <https://intencion-compra.streamlit.app>. Cada cambio que se sube a `main` actualiza la app sola.
+
+**B. Docker en Google Cloud Shell**
+
+1. En la consola de Google Cloud, clic en el ícono `>_` (Activar Cloud Shell). No requiere facturación.
+2. Ejecutar:
+
+```bash
+git clone https://github.com/allisonloangorayo-sudo/intencion-compra-streamlit.git
+cd intencion-compra-streamlit
+docker build -t intencion-compra-app .
+docker run -d --name intencion-compra -p 8501:8501 intencion-compra-app
+docker ps
+docker logs intencion-compra
+```
+
+3. Arriba de la terminal: **Vista previa en la Web → Cambiar puerto → 8501 → Cambiar y obtener vista previa**.
+4. Tomar captura de cada comando y de la app abierta.
+
+Las fases 3 y 4 siguientes describen la VM, para cuando haya facturación o créditos del curso.
+
+---
+
 ## Fase 3 — Máquina virtual en Google Cloud
 
 ### 3.1 Crear la VM
