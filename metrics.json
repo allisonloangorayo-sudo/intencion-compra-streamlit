@@ -1,0 +1,31 @@
+{
+  "dataset": "online_shoppers_intention.csv",
+  "n_rows": 12330,
+  "positive_rate": 0.1547,
+  "train_size": 9864,
+  "test_size": 2466,
+  "cv_f1_by_model": {
+    "logistic_regression": 0.6649,
+    "random_forest": 0.6676
+  },
+  "selected_model": "random_forest",
+  "test_metrics": {
+    "f1_compra": 0.6359,
+    "recall_compra": 0.7749,
+    "precision_compra": 0.5392,
+    "roc_auc": 0.9278,
+    "pr_auc": 0.7278,
+    "f1_weighted": 0.872,
+    "confusion_matrix": [
+      [
+        1831,
+        253
+      ],
+      [
+        86,
+        296
+      ]
+    ]
+  },
+  "roc_auc_without_PageValues": 0.7644
+}
