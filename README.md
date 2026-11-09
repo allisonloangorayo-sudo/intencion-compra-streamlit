@@ -257,13 +257,7 @@ Universidad Externado de Colombia, Ciencia de Datos.
 
 ## 18. Uso de inteligencia artificial
 
-Este proyecto se desarrolló con apoyo de **Claude** (Anthropic), un asistente de inteligencia artificial. Lo usamos para:
-
-- diseñar la interfaz de la página: estructura de las pestañas, colores, tipografía, el ticket del resultado y las gráficas;
-- generar y revisar el código (`train.py`, `app.py`, `ui/`, `Dockerfile`) y las pruebas;
-- redactar la documentación (este README y las guías de `docs/`).
-
-Nosotras definimos la ruta (supervisada) y elegimos el dataset, ejecutamos el cuaderno en Colab, probamos la app con distintos casos, la desplegamos en Streamlit Community Cloud y revisamos los resultados y el diseño final. Toda decisión y todo resultado reportado aquí fue verificado por las autoras.
+Usamos **Claude** (Anthropic) principalmente para el diseño visual de la página, y también como asistente para escribir y revisar código y documentación. Las decisiones del proyecto y la verificación de los resultados son de las autoras.
 
 ## 19. Estado de la entrega
 
