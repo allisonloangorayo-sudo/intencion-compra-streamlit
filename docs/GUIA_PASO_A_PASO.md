@@ -22,10 +22,10 @@ Repositorio: `https://github.com/allisonloangorayo-sudo/intencion-compra-streaml
    - clona el repo e instala `requirements.txt`;
    - responde las preguntas de la sección 6 de la guía (qué es una fila, objetivo, faltantes, tipos de variables);
    - ejecuta `python train.py` y muestra `metrics.json`;
-   - levanta Streamlit en segundo plano y abre un túnel con `localtunnel`;
+   - levanta Streamlit en segundo plano y abre un túnel temporal con Cloudflare;
    - corre las pruebas (`pytest`).
-3. **Túnel de localtunnel**: la página que abre pide una contraseña. Es la IP pública del Colab; la imprime la celda `!curl -s ipv4.icanhazip.com`.
-4. Probar los tres casos del selector "Cargar un caso de ejemplo" y al menos un caso propio con valores extremos.
+3. **Túnel**: la celda imprime un enlace `https://...trycloudflare.com`. No pide contraseña. Usamos Cloudflare porque `localtunnel` (el que sugiere la guía) dejaba la página en blanco: no entregaba algunos archivos de Streamlit.
+4. Probar las tres fichas de ejemplo (Visita típica, Alta intención, Rebote rápido) y al menos un caso propio con valores extremos, por ejemplo valor de página = 300 (resultado: compra, ~89,5 %).
 
 > Si la red de la universidad bloquea el túnel, basta con que el log diga `You can now view your Streamlit app` y continuar con GCP (lo permite la guía).
 
@@ -196,7 +196,7 @@ Abrir en el navegador (con **http**, no https):
 http://IP_EXTERNA_DE_LA_VM:8501
 ```
 
-Cargar "Sesión con alta intención" → **Ejecutar modelo** → debe salir *Compra · 94,5 %*.
+Elegir la ficha **Alta intención** → **Calcular probabilidad** → debe salir *Compra, 94,5 %*.
 
 ### 4.6 Diagnóstico rápido
 

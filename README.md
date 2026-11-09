@@ -126,8 +126,10 @@ intencion-compra-streamlit/
 │   └── test_app.py         # Pruebas del artefacto y de la app con 3 casos
 └── docs/
     ├── GUIA_PASO_A_PASO.md        # Todo el reto, de Colab a GCP
+    ├── checklist_entrega.md       # Estado de cada entregable y dónde está la evidencia
     ├── prueba_cruzada.md          # Formato para registrar la prueba con otra pareja
-    └── preguntas_discusion.md     # Respuestas preparadas para la discusión final
+    ├── preguntas_discusion.md     # Respuestas preparadas para la discusión final
+    └── evidencias/                # Capturas de Colab, Docker, Cloud Shell y prueba cruzada
 ```
 
 ## 9. Cómo ejecutar `train.py`
@@ -151,7 +153,7 @@ Abrir `http://localhost:8501`.
 
 ## 11. Cómo construir la imagen Docker
 
-Dentro de la carpeta del repositorio (en la VM de GCP):
+Dentro de la carpeta del repositorio, en cualquier Linux con Docker (la VM de GCP o Google Cloud Shell):
 
 ```bash
 docker build -t intencion-compra-app .
@@ -173,6 +175,22 @@ docker logs intencion-compra
 
 Abrir `http://IP_EXTERNA_DE_LA_VM:8501` (requiere la regla de firewall del puerto 8501; ver `docs/GUIA_PASO_A_PASO.md`, fase 4).
 
+**Sin VM: Google Cloud Shell.** Cloud Shell es una terminal Linux gratuita de Google que ya trae Docker y no pide activar facturación.
+
+1. En <https://console.cloud.google.com>, clic en el ícono `>_` (*Activar Cloud Shell*), arriba a la derecha.
+2. Ejecutar:
+
+```bash
+git clone https://github.com/allisonloangorayo-sudo/intencion-compra-streamlit.git
+cd intencion-compra-streamlit
+docker build -t intencion-compra-app .
+docker run -d --name intencion-compra -p 8501:8501 intencion-compra-app
+docker ps
+docker logs intencion-compra
+```
+
+3. Arriba de la terminal: **Vista previa en la Web → Cambiar puerto → 8501 → Cambiar y obtener vista previa**.
+
 **Actualizar tras cambios en GitHub:**
 
 ```bash
@@ -184,9 +202,9 @@ docker run -d --name intencion-compra --restart unless-stopped -p 8501:8501 inte
 
 ## 13. Ejemplo de entrada y salida
 
-En la app, el selector **"Cargar un caso de ejemplo"** llena estos valores:
+En la pestaña **Predicción**, las fichas de ejemplo llenan estos valores. Después se pulsa **Calcular probabilidad**:
 
-| Variable | Sesión con alta intención | Sesión de rebote rápido |
+| Variable | Alta intención | Rebote rápido |
 |---|---|---|
 | Administrative / Duration | 3 / 80 s | 0 / 0 s |
 | Informational / Duration | 1 / 30 s | 0 / 0 s |
@@ -200,16 +218,16 @@ En la app, el selector **"Cargar un caso de ejemplo"** llena estos valores:
 | Weekend | False | False |
 | **Salida esperada** | **Compra — 94,5 %** | **No compra — 0,1 %** |
 
-El caso "Sesión típica" (valores medianos del dataset) da **No compra — 3,2 %**.
+La ficha **Visita típica** (valores medianos del dataset) da **No compra — 3,2 %**.
 
-En la pestaña Predicción, la sección **"¿Por qué este resultado?"** muestra, para la sesión con alta intención, que el valor de página (40 frente a 0 en una sesión típica) sube la probabilidad unos 41 puntos, la tasa de salida baja la sube unos 6 y el mes de noviembre unos 4.
+El ticket del resultado muestra, en **"Lo que movió la probabilidad"**, que para el caso de alta intención el valor de página (40 frente a 0 en una visita típica) sube la probabilidad unos 41 puntos, la tasa de salida baja la sube unos 6 y el mes de noviembre unos 4.
 
 ## 14. Despliegue
 
 | Parte | Dónde | Evidencia |
 |---|---|---|
 | App pública | **Streamlit Community Cloud**, conectado a este repositorio (`main`, `app.py`, Python 3.12) | https://intencion-compra.streamlit.app |
-| Imagen Docker | `docker build` y `docker run` en **Google Cloud Shell** | Capturas de `docker build`, `docker ps`, `docker logs` y la vista previa web en el puerto 8501 |
+| Imagen Docker | `docker build` y `docker run` en **Google Cloud Shell** (ver sección 12) | Capturas en `docs/evidencias/` |
 | VM de Compute Engine | Pasos completos en `docs/GUIA_PASO_A_PASO.md` (fases 3 y 4) | Pendiente: requiere activar la facturación de Google Cloud |
 
 Streamlit Community Cloud se actualiza solo con cada cambio en `main`. Cloud Shell es una máquina Linux gratuita de Google con Docker instalado; sirve para construir y ejecutar la misma imagen que se usaría en la VM.
@@ -235,4 +253,18 @@ Verifican que `model.joblib` tiene los metadatos que usa la app, que la app resp
 - Allison Loango — [allison.loango@est.uexternado.edu.co](mailto:allison.loango@est.uexternado.edu.co)
 - Angie Loango — [angie.loango@est.uexternado.edu.co](mailto:angie.loango@est.uexternado.edu.co)
 
-Universidad Externado de Colombia · Ciencia de Datos
+Universidad Externado de Colombia, Ciencia de Datos.
+
+## 18. Uso de inteligencia artificial
+
+Este proyecto se desarrolló con apoyo de **Claude** (Anthropic), un asistente de inteligencia artificial. Lo usamos para:
+
+- diseñar la interfaz de la página: estructura de las pestañas, colores, tipografía, el ticket del resultado y las gráficas;
+- generar y revisar el código (`train.py`, `app.py`, `ui/`, `Dockerfile`) y las pruebas;
+- redactar la documentación (este README y las guías de `docs/`).
+
+Nosotras definimos la ruta (supervisada) y elegimos el dataset, ejecutamos el cuaderno en Colab, probamos la app con distintos casos, la desplegamos en Streamlit Community Cloud y revisamos los resultados y el diseño final. Toda decisión y todo resultado reportado aquí fue verificado por las autoras.
+
+## 19. Estado de la entrega
+
+El checklist de la guía (secciones 32 y 34), con lo que está hecho y dónde está la evidencia, está en [`docs/checklist_entrega.md`](docs/checklist_entrega.md).

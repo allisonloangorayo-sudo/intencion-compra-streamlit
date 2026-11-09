@@ -6,8 +6,9 @@ La otra pareja reproduce el proyecto usando **solo** la URL del repositorio y el
 |---|---|
 | Pareja que reprodujo | |
 | Fecha y hora | |
-| Entorno usado | VM GCP / otro: |
+| Entorno usado | VM GCP / Google Cloud Shell / otro: |
 | URL recibida | https://github.com/allisonloangorayo-sudo/intencion-compra-streamlit |
+| App pública de referencia | https://intencion-compra.streamlit.app |
 
 ## Pasos
 
@@ -17,8 +18,8 @@ La otra pareja reproduce el proyecto usando **solo** la URL del repositorio y el
 | 2. Leer README sin instrucciones verbales | | | |
 | 3. `docker build -t intencion-compra-app .` | | | |
 | 4. `docker run ... -p 8501:8501 intencion-compra-app` | | | |
-| 5. Abrir la app (localhost o IP externa) | | | |
-| 6. Probar un caso | | | Entrada: · Salida obtenida: |
+| 5. Abrir la app (IP externa, vista previa de Cloud Shell o localhost) | | | |
+| 6. Probar un caso | | | Ficha o valores usados: ___ ; salida obtenida: ___ ; salida esperada (README §13): ___ |
 
 ## Instrucciones faltantes o confusas
 
