@@ -32,14 +32,14 @@ def test_model_predicts_probability():
 
 
 @pytest.mark.parametrize("preset, low, high", [
-    ("Sesión típica", 0.0, 0.10),
-    ("Sesión con alta intención", 0.80, 1.0),
-    ("Sesión de rebote rápido", 0.0, 0.05),
+    ("Visita típica", 0.0, 0.10),
+    ("Alta intención", 0.80, 1.0),
+    ("Rebote rápido", 0.0, 0.05),
 ])
 def test_app_runs_each_preset(preset, low, high):
     at = AppTest.from_file(APP, default_timeout=60).run()
     assert not at.exception
-    at.selectbox[0].select(preset).run()
+    at.radio(key="preset_choice").set_value(preset).run()
     at.button[0].click().run()
     assert not at.exception
     proba = at.session_state["resultado"]["proba"]

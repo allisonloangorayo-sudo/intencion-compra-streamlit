@@ -37,7 +37,7 @@ Repositorio: `https://github.com/allisonloangorayo-sudo/intencion-compra-streaml
 
 El repositorio ya tiene todos los entregables. Antes de la demostración, revisar:
 
-- [ ] README → sección **Autores**: escribir el nombre de la pareja.
+- [x] README → sección **Autoras**: Allison Loango y Angie Loango.
 - [ ] Si reentrenan con otra versión de librerías, subir el nuevo `model.joblib` y `metrics.json`.
 - [ ] No hay tokens, contraseñas ni archivos `.env`.
 

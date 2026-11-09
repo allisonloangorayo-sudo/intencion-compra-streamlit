@@ -8,7 +8,7 @@ Solución completa de Machine Learning, del dataset al despliegue: un modelo que
 
 La app tiene cuatro pestañas:
 
-- **Predicción**: formulario de la sesión, medidor de probabilidad y explicación de qué variables subieron o bajaron el resultado.
+- **Predicción**: formulario de la visita y un "ticket" con la probabilidad de compra, las variables que la subieron o bajaron y una comparación con compradores y no compradores reales.
 - **Los datos**: qué es el dataset, para qué sirve y gráficas de la tasa de compra según cada variable.
 - **El modelo**: cómo funciona el random forest, métricas explicadas, matriz de confusión, curvas ROC y precisión–recall, importancia de variables y comparación con la regresión logística.
 - **El proyecto**: usos para una tienda, arquitectura y cómo reproducirlo.
@@ -106,8 +106,9 @@ Las sesiones con `PageValues` alto, muchas páginas de producto y tasas de salid
 intencion-compra-streamlit/
 ├── app.py                  # Interfaz Streamlit (carga model.joblib, no reentrena)
 ├── ui/
-│   ├── charts.py           # Gráficas Altair y medidor de probabilidad
-│   └── styles.py           # Estilos de la interfaz
+│   ├── charts.py           # Gráficas Altair
+│   ├── components.py       # Portada, ticket del resultado, comparación y otras piezas HTML
+│   └── styles.py           # Colores, tipografía y estilos de la interfaz
 ├── .streamlit/
 │   └── config.toml         # Tema de colores de Streamlit
 ├── train.py                # Entrenamiento reproducible → model.joblib + metrics.json
@@ -231,7 +232,7 @@ Verifican que `model.joblib` tiene los metadatos que usa la app, que la app resp
 
 ## 17. Autoras
 
-- Allison Loango — allison.loango@est.uexternado.edu.co
-- Angie *[completar apellido y correo]*
+- Allison Loango — [allison.loango@est.uexternado.edu.co](mailto:allison.loango@est.uexternado.edu.co)
+- Angie Loango — [angie.loango@est.uexternado.edu.co](mailto:angie.loango@est.uexternado.edu.co)
 
 Universidad Externado de Colombia · Ciencia de Datos
