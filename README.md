@@ -122,6 +122,9 @@ intencion-compra-streamlit/
 │   └── online_shoppers_intention.csv
 ├── notebooks/
 │   └── 01_desarrollo_colab.ipynb   # Exploración, entrenamiento y prueba de la app en Colab
+├── scripts/
+│   └── docker_demo.sh      # build + run + ps + logs en un solo comando
+├── .devcontainer/          # Configuración de GitHub Codespaces (Docker y puerto 8501)
 ├── tests/
 │   └── test_app.py         # Pruebas del artefacto y de la app con 3 casos
 └── docs/
@@ -129,7 +132,7 @@ intencion-compra-streamlit/
     ├── checklist_entrega.md       # Estado de cada entregable y dónde está la evidencia
     ├── prueba_cruzada.md          # Formato para registrar la prueba con otra pareja
     ├── preguntas_discusion.md     # Respuestas preparadas para la discusión final
-    └── evidencias/                # Capturas de Colab, Docker, Cloud Shell y prueba cruzada
+    └── evidencias/                # Capturas de Colab, Docker (Codespaces) y prueba cruzada
 ```
 
 ## 9. Cómo ejecutar `train.py`
@@ -153,7 +156,7 @@ Abrir `http://localhost:8501`.
 
 ## 11. Cómo construir la imagen Docker
 
-Dentro de la carpeta del repositorio, en cualquier Linux con Docker (la VM de GCP o Google Cloud Shell):
+Dentro de la carpeta del repositorio, en cualquier Linux con Docker (la VM de GCP, GitHub Codespaces o Google Cloud Shell):
 
 ```bash
 docker build -t intencion-compra-app .
@@ -175,21 +178,21 @@ docker logs intencion-compra
 
 Abrir `http://IP_EXTERNA_DE_LA_VM:8501` (requiere la regla de firewall del puerto 8501; ver `docs/GUIA_PASO_A_PASO.md`, fase 4).
 
-**Sin VM: Google Cloud Shell.** Cloud Shell es una terminal Linux gratuita de Google que ya trae Docker y no pide activar facturación.
+**Sin VM: GitHub Codespaces (gratis, sin tarjeta).** El repositorio trae `.devcontainer/`, así que el Codespace abre con Docker instalado y el puerto 8501 configurado.
 
-1. En <https://console.cloud.google.com>, clic en el ícono `>_` (*Activar Cloud Shell*), arriba a la derecha.
-2. Ejecutar:
+1. En este repositorio: botón verde **Code → Codespaces → Create codespace on main**.
+2. En la terminal del Codespace:
 
 ```bash
-git clone https://github.com/allisonloangorayo-sudo/intencion-compra-streamlit.git
-cd intencion-compra-streamlit
-docker build -t intencion-compra-app .
-docker run -d --name intencion-compra -p 8501:8501 intencion-compra-app
-docker ps
-docker logs intencion-compra
+bash scripts/docker_demo.sh
 ```
 
-3. Arriba de la terminal: **Vista previa en la Web → Cambiar puerto → 8501 → Cambiar y obtener vista previa**.
+   El script hace `docker build`, `docker run`, `docker ps` y `docker logs`, en ese orden.
+
+3. Abrir la app: aviso **Open in Browser**, o pestaña **PORTS → 8501 → 🌐**.
+4. Al terminar: <https://github.com/codespaces> → **⋯ → Delete**.
+
+Con una cuenta gratis de GitHub sin método de pago, al agotarse las horas incluidas el uso se bloquea; no se cobra. Los mismos comandos funcionan en Google Cloud Shell o en cualquier Linux con Docker.
 
 **Actualizar tras cambios en GitHub:**
 
@@ -227,10 +230,10 @@ El ticket del resultado muestra, en **"Lo que movió la probabilidad"**, que par
 | Parte | Dónde | Evidencia |
 |---|---|---|
 | App pública | **Streamlit Community Cloud**, conectado a este repositorio (`main`, `app.py`, Python 3.12) | https://intencion-compra.streamlit.app |
-| Imagen Docker | `docker build` y `docker run` en **Google Cloud Shell** (ver sección 12) | Capturas en `docs/evidencias/` |
+| Imagen Docker | `docker build` y `docker run` en **GitHub Codespaces** (ver sección 12) | Capturas en `docs/evidencias/` |
 | VM de Compute Engine | Pasos completos en `docs/GUIA_PASO_A_PASO.md` (fases 3 y 4) | Pendiente: requiere activar la facturación de Google Cloud |
 
-Streamlit Community Cloud se actualiza solo con cada cambio en `main`. Cloud Shell es una máquina Linux gratuita de Google con Docker instalado; sirve para construir y ejecutar la misma imagen que se usaría en la VM.
+Streamlit Community Cloud se actualiza solo con cada cambio en `main`. Codespaces es una máquina Linux en la nube con Docker; sirve para construir y ejecutar la misma imagen que se usaría en la VM. No usamos la VM porque activar la facturación de Google Cloud exige una autorización en tarjeta de crédito.
 
 ## 15. Pruebas
 

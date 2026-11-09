@@ -45,7 +45,7 @@ Para editar desde el navegador: abrir el archivo en GitHub → ícono de lápiz 
 
 ---
 
-## Ruta usada en esta entrega: Streamlit Cloud + Cloud Shell
+## Ruta usada en esta entrega: Streamlit Cloud + Codespaces
 
 Crear la VM exige activar la facturación de Google Cloud, que pide una autorización temporal en una tarjeta. Mientras eso no sea posible, la entrega usa dos servicios gratuitos que cubren lo mismo:
 
@@ -57,22 +57,13 @@ Crear la VM exige activar la facturación de Google Cloud, que pide una autoriza
 4. **Advanced settings** → Python **3.12** → **Save** → **Deploy**.
 5. Resultado: <https://intencion-compra.streamlit.app>. Cada cambio que se sube a `main` actualiza la app sola.
 
-**B. Docker en Google Cloud Shell**
+**B. Docker en GitHub Codespaces**
 
-1. En la consola de Google Cloud, clic en el ícono `>_` (Activar Cloud Shell). No requiere facturación.
-2. Ejecutar:
-
-```bash
-git clone https://github.com/allisonloangorayo-sudo/intencion-compra-streamlit.git
-cd intencion-compra-streamlit
-docker build -t intencion-compra-app .
-docker run -d --name intencion-compra -p 8501:8501 intencion-compra-app
-docker ps
-docker logs intencion-compra
-```
-
-3. Arriba de la terminal: **Vista previa en la Web → Cambiar puerto → 8501 → Cambiar y obtener vista previa**.
-4. Tomar captura de cada comando y de la app abierta.
+1. En el repositorio: **Code → Codespaces → Create codespace on main**. Gratis con la cuenta de GitHub y sin tarjeta.
+2. En la terminal: `bash scripts/docker_demo.sh`.
+3. Abrir la app: **Open in Browser**, o pestaña **PORTS → 8501 → 🌐**.
+4. Tomar captura del build, de `docker ps`, de `docker logs` y de la app (nombres en `docs/evidencias/README.md`).
+5. Borrar el Codespace al terminar: <https://github.com/codespaces> → **⋯ → Delete**.
 
 Las fases 3 y 4 siguientes describen la VM, para cuando haya facturación o créditos del curso.
 

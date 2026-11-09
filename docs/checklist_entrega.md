@@ -15,7 +15,7 @@ Estado de cada punto de la guía. ✅ hecho · ⏳ pendiente (lo hacen las autor
 | `Dockerfile` y `.dockerignore` | ✅ | raíz del repo |
 | README completo | ✅ | `README.md` (los 14 puntos de la sección 20, más despliegue, pruebas y uso de IA) |
 | Aplicación desplegada | ⚠️ | https://intencion-compra.streamlit.app (Streamlit Community Cloud). La VM de Compute Engine requiere activar facturación; pasos completos en `docs/GUIA_PASO_A_PASO.md` |
-| Docker ejecutado en Linux de Google | ⏳ | Cloud Shell: README §12. Capturas en `docs/evidencias/` |
+| Docker ejecutado en Linux de Google | ⏳ | GitHub Codespaces: README §12. Capturas en `docs/evidencias/` |
 | Evidencia de la prueba cruzada | ⏳ | `docs/prueba_cruzada.md` |
 | Interpretación de resultados | ✅ | README §6 y §7, pestaña "El modelo" de la app |
 
@@ -33,13 +33,13 @@ Estado de cada punto de la guía. ✅ hecho · ⏳ pendiente (lo hacen las autor
 | Probamos Streamlit en Colab | ✅ | túnel de Cloudflare; captura del caso extremo (valor de página 300 → compra 89,5 %) |
 | `requirements.txt`, `Dockerfile`, `.dockerignore` | ✅ | raíz del repo |
 | El repositorio tiene todos los archivos | ✅ | ver README §8 |
-| VM creada y acceso por SSH | ⚠️ | sin facturación; se usa Cloud Shell (Linux de Google con SSH en el navegador) |
-| Docker instalado | ✅ | Cloud Shell ya lo trae (`docker --version`) |
+| VM creada y acceso por SSH | ⚠️ | sin facturación en Google Cloud; se usa GitHub Codespaces (Linux en la nube con terminal en el navegador) |
+| Docker instalado | ✅ | `.devcontainer/` instala Docker en el Codespace |
 | `docker build` termina bien | ⏳ | captura `02_docker_build.png` |
 | `docker run` deja el contenedor activo | ⏳ | captura `03_docker_ps.png` |
 | `docker logs` sin errores críticos | ⏳ | captura `04_docker_logs.png` |
-| Regla de firewall | ⚠️ | no aplica en Cloud Shell (la vista previa web expone el puerto 8501); pasos para la VM en la guía, fase 4.4 |
-| La app abre desde fuera | ✅ | https://intencion-compra.streamlit.app; en Cloud Shell, captura `05_cloudshell_app.png` |
+| Regla de firewall | ⚠️ | no aplica en Codespaces (el reenvío de puertos expone el 8501); pasos para la VM en la guía, fase 4.4 |
+| La app abre desde fuera | ✅ | https://intencion-compra.streamlit.app; en Codespaces, captura `05_docker_app.png` |
 | Otra pareja reprodujo el proyecto | ⏳ | `docs/prueba_cruzada.md` |
 | Sabemos detener / eliminar recursos | ✅ | guía, fase 6 |
 

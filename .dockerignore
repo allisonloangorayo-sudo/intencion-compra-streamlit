@@ -12,3 +12,5 @@ docs/
 tests/
 data/
 requirements-dev.txt
+.devcontainer/
+scripts/
