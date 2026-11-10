@@ -80,6 +80,7 @@ a {{ color: {EMERALD}; }}
     mask-image: linear-gradient(115deg, transparent 35%, #000 75%);
 }}
 .stage-copy {{ padding-bottom: 3rem; align-self: center; }}
+.stApp [data-testid="stHeaderActionElements"], .stage h1 a {{ display: none !important; }}
 .stage h1 {{
     font-family: {FONT}; font-variation-settings: "opsz" 96, "wdth" 82; font-weight: 720;
     font-size: clamp(2.5rem, 4.9vw, 4.3rem); line-height: .98; letter-spacing: -0.035em;

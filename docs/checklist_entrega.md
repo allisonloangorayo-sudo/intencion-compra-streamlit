@@ -39,7 +39,7 @@ Estado de cada punto de la guía. ✅ hecho · ⏳ pendiente (lo hacen las autor
 | `docker run` deja el contenedor activo | ✅ | `docker_codespaces_log.txt`: `docker ps` muestra *Up*, puerto 8501 |
 | `docker logs` sin errores críticos | ✅ | `docker_codespaces_log.txt`: *You can now view your Streamlit app* |
 | Regla de firewall | ⚠️ | no aplica en Codespaces (el reenvío de puertos expone el 8501); pasos para la VM en la guía, fase 4.4 |
-| La app abre desde fuera | ✅ | https://intencion-compra.streamlit.app; en Codespaces, captura `05_docker_app.png` |
+| La app abre desde fuera | ✅ | https://intencion-compra.streamlit.app; desde el contenedor en Codespaces, captura `05_docker_app.png` |
 | Otra pareja reprodujo el proyecto | ⏳ | `docs/prueba_cruzada.md` |
 | Sabemos detener / eliminar recursos | ✅ | guía, fase 6 |
 

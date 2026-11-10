@@ -9,9 +9,9 @@ Capturas de pantalla: Súbelas aquí con estos nombres (GitHub: **Add file → U
 | Archivo | Qué debe verse |
 |---|---|
 | `01_colab_app.png` | La app abierta desde Colab con un resultado (por ejemplo, valor de página 300 → compra 89,5 %) |
-| `02_docker_build.png` | Final de `docker build -t intencion-compra-app .` en Codespaces, sin errores |
-| `03_docker_ps.png` | `docker ps` con el contenedor `intencion-compra` en estado *Up* |
-| `04_docker_logs.png` | `docker logs intencion-compra` con la línea *You can now view your Streamlit app* |
-| `05_docker_app.png` | La app servida por el contenedor (puerto 8501 del Codespace) con un resultado |
+| `docker_codespaces_log.txt` ✅ | Salida completa del build, `docker images`, `docker run`, `docker ps` y `docker logs` |
+| `03_docker_ps.png` ✅ | Contenedor recreado con `docker run` y `docker ps` en estado *Up*, puerto 8501 |
+| `04_puerto_8501.png` ✅ | Pestaña *Puertos* del Codespace: el 8501 reenviado y el proceso de Streamlit (Python 3.12) en ejecución |
+| `05_docker_app.png` ✅ | La app servida por el contenedor en `...-8501.app.github.dev`, con el ticket calculado por el modelo (94,5 %) |
 | `06_streamlit_cloud.png` | La app en https://intencion-compra.streamlit.app, con la URL visible |
 | `07_prueba_cruzada.png` | La app funcionando en el entorno de la otra pareja |
