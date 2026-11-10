@@ -1,6 +1,10 @@
 # Evidencias
 
-Capturas de pantalla para la entrega. Súbelas aquí con estos nombres (GitHub: **Add file → Upload files**, dentro de esta carpeta).
+Evidencias de la entrega.
+
+- `docker_codespaces_log.txt`: salida completa de `bash scripts/docker_demo.sh` en GitHub Codespaces (build, images, run, ps y logs).
+
+Capturas de pantalla: Súbelas aquí con estos nombres (GitHub: **Add file → Upload files**, dentro de esta carpeta).
 
 | Archivo | Qué debe verse |
 |---|---|

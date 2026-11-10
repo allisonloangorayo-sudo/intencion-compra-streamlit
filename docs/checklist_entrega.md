@@ -15,7 +15,7 @@ Estado de cada punto de la guía. ✅ hecho · ⏳ pendiente (lo hacen las autor
 | `Dockerfile` y `.dockerignore` | ✅ | raíz del repo |
 | README completo | ✅ | `README.md` (los 14 puntos de la sección 20, más despliegue, pruebas y uso de IA) |
 | Aplicación desplegada | ⚠️ | https://intencion-compra.streamlit.app (Streamlit Community Cloud). La VM de Compute Engine requiere activar facturación; pasos completos en `docs/GUIA_PASO_A_PASO.md` |
-| Docker ejecutado en Linux de Google | ⏳ | GitHub Codespaces: README §12. Capturas en `docs/evidencias/` |
+| Docker: imagen y contenedor funcionando | ✅ | GitHub Codespaces (README §12). Salida completa de la terminal en `docs/evidencias/docker_codespaces_log.txt` |
 | Evidencia de la prueba cruzada | ⏳ | `docs/prueba_cruzada.md` |
 | Interpretación de resultados | ✅ | README §6 y §7, pestaña "El modelo" de la app |
 
@@ -35,9 +35,9 @@ Estado de cada punto de la guía. ✅ hecho · ⏳ pendiente (lo hacen las autor
 | El repositorio tiene todos los archivos | ✅ | ver README §8 |
 | VM creada y acceso por SSH | ⚠️ | sin facturación en Google Cloud; se usa GitHub Codespaces (Linux en la nube con terminal en el navegador) |
 | Docker instalado | ✅ | el Codespace estándar de GitHub ya lo trae (`docker --version`) |
-| `docker build` termina bien | ⏳ | captura `02_docker_build.png` |
-| `docker run` deja el contenedor activo | ⏳ | captura `03_docker_ps.png` |
-| `docker logs` sin errores críticos | ⏳ | captura `04_docker_logs.png` |
+| `docker build` termina bien | ✅ | `docker_codespaces_log.txt`: *Building 155.6s (10/10) FINISHED* |
+| `docker run` deja el contenedor activo | ✅ | `docker_codespaces_log.txt`: `docker ps` muestra *Up*, puerto 8501 |
+| `docker logs` sin errores críticos | ✅ | `docker_codespaces_log.txt`: *You can now view your Streamlit app* |
 | Regla de firewall | ⚠️ | no aplica en Codespaces (el reenvío de puertos expone el 8501); pasos para la VM en la guía, fase 4.4 |
 | La app abre desde fuera | ✅ | https://intencion-compra.streamlit.app; en Codespaces, captura `05_docker_app.png` |
 | Otra pareja reprodujo el proyecto | ⏳ | `docs/prueba_cruzada.md` |
