@@ -6,3 +6,6 @@ __pycache__/
 .env
 *.log
 .DS_Store
+
+# Generado por train.py
+metrics.json

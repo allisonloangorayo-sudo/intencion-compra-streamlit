@@ -89,7 +89,7 @@ Matriz de confusión (umbral 0,5):
 
 **Por qué estas métricas.** Con 84,5 % de sesiones sin compra, un modelo que diga siempre "no compra" tendría 84,5 % de accuracy y sería inútil. Por eso se priorizan el **recall** y el **F1 de la clase compra**, y el **ROC-AUC / PR-AUC** para medir la capacidad de ordenar sesiones por probabilidad. Para un incentivo de marketing es preferible detectar 3 de cada 4 compradores potenciales aunque algunos avisos lleguen a quien no compraría.
 
-Las métricas completas quedan en `metrics.json` cada vez que se entrena.
+`train.py` imprime estas métricas y las guarda en `metrics.json` cada vez que se ejecuta.
 
 ## 7. Interpretación de la salida
 
@@ -105,33 +105,18 @@ Las sesiones con `PageValues` alto, muchas páginas de producto y tasas de salid
 ```
 intencion-compra-streamlit/
 ├── app.py                  # Interfaz Streamlit (carga model.joblib, no reentrena)
-├── ui/
-│   ├── charts.py           # Gráficas Altair
-│   ├── components.py       # Portada, ticket del resultado, comparación y otras piezas HTML
-│   └── styles.py           # Colores, tipografía y estilos de la interfaz
-├── .streamlit/
-│   └── config.toml         # Tema de colores de Streamlit
-├── train.py                # Entrenamiento reproducible → model.joblib + metrics.json
-├── model.joblib            # Pipeline entrenado + metadatos y resúmenes para las gráficas
-├── metrics.json            # Métricas de la última ejecución de train.py
-├── requirements.txt        # Dependencias con versiones fijas (las usa Docker)
-├── requirements-dev.txt    # requirements + pytest
+├── train.py                # Entrenamiento reproducible → model.joblib (+ metrics.json)
+├── model.joblib            # Pipeline entrenado + metadatos para la interfaz
+├── requirements.txt        # Dependencias con versiones fijas
 ├── Dockerfile
 ├── .dockerignore
+├── README.md
+├── evidencias.pdf          # Capturas de Colab y de Docker (build, run, ps, logs y app)
 ├── data/
 │   └── online_shoppers_intention.csv
-├── notebooks/
-│   └── 01_desarrollo_colab.ipynb   # Exploración, entrenamiento y prueba de la app en Colab
-├── scripts/
-│   └── docker_demo.sh      # build + run + ps + logs en un solo comando
-├── tests/
-│   └── test_app.py         # Pruebas del artefacto y de la app con 3 casos
-└── docs/
-    ├── GUIA_PASO_A_PASO.md        # Todo el reto, de Colab a GCP
-    ├── checklist_entrega.md       # Estado de cada entregable y dónde está la evidencia
-    ├── prueba_cruzada.md          # Formato para registrar la prueba con otra pareja
-    ├── preguntas_discusion.md     # Respuestas preparadas para la discusión final
-    └── evidencias/                # Capturas de Colab, Docker (Codespaces) y prueba cruzada
+├── ui/                     # Estilos, gráficas y piezas visuales que usa app.py
+└── .streamlit/
+    └── config.toml         # Colores de la app
 ```
 
 ## 9. Cómo ejecutar `train.py`
@@ -151,7 +136,24 @@ streamlit run app.py
 
 Abrir `http://localhost:8501`.
 
-**En Google Colab**: abrir `notebooks/01_desarrollo_colab.ipynb` (botón "Open in Colab" o `Archivo → Abrir cuaderno → GitHub`) y ejecutar las celdas en orden; la sección 5 levanta la app y crea un túnel temporal.
+**En Google Colab:**
+
+```python
+!git clone -q https://github.com/allisonloangorayo-sudo/intencion-compra-streamlit.git
+%cd intencion-compra-streamlit
+!pip -q install -r requirements.txt
+!python train.py
+!nohup streamlit run app.py --server.port 8501 --server.address 0.0.0.0 > /content/streamlit.log 2>&1 &
+```
+
+Para verla desde el navegador se abre un túnel temporal. Usamos Cloudflare porque `localtunnel` dejaba la página en blanco:
+
+```python
+!wget -q -O cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 && chmod +x cloudflared
+!./cloudflared tunnel --url http://localhost:8501
+```
+
+La celda imprime un enlace `https://...trycloudflare.com`.
 
 ## 11. Cómo construir la imagen Docker
 
@@ -175,7 +177,12 @@ docker ps
 docker logs intencion-compra
 ```
 
-Abrir `http://IP_EXTERNA_DE_LA_VM:8501` (requiere la regla de firewall del puerto 8501; ver `docs/GUIA_PASO_A_PASO.md`, fase 4).
+Abrir `http://IP_EXTERNA_DE_LA_VM:8501`. Requiere una regla de firewall para TCP 8501 aplicada a la VM:
+
+```bash
+gcloud compute firewall-rules create allow-streamlit-8501 --allow=tcp:8501 \
+  --direction=INGRESS --source-ranges=0.0.0.0/0 --target-tags=streamlit-server
+```
 
 **Sin VM: GitHub Codespaces (gratis, sin tarjeta).** El Codespace estándar de GitHub ya trae Docker instalado.
 
@@ -183,10 +190,11 @@ Abrir `http://IP_EXTERNA_DE_LA_VM:8501` (requiere la regla de firewall del puert
 2. En la terminal del Codespace:
 
 ```bash
-bash scripts/docker_demo.sh
+docker build -t intencion-compra-app .
+docker run -d --name intencion-compra -p 8501:8501 intencion-compra-app
+docker ps
+docker logs intencion-compra
 ```
-
-   El script hace `docker build`, `docker run`, `docker ps` y `docker logs`, en ese orden.
 
 3. Abrir la app: aviso **Open in Browser**, o pestaña **PORTS → 8501 → 🌐**.
 4. Al terminar: <https://github.com/codespaces> → **⋯ → Delete**.
@@ -229,38 +237,25 @@ El ticket del resultado muestra, en **"Lo que movió la probabilidad"**, que par
 | Parte | Dónde | Evidencia |
 |---|---|---|
 | App pública | **Streamlit Community Cloud**, conectado a este repositorio (`main`, `app.py`, Python 3.12) | https://intencion-compra.streamlit.app |
-| Imagen Docker | `docker build` y `docker run` en **GitHub Codespaces** (ver sección 12) | Capturas en `docs/evidencias/` |
-| VM de Compute Engine | Pasos completos en `docs/GUIA_PASO_A_PASO.md` (fases 3 y 4) | Pendiente: requiere activar la facturación de Google Cloud |
+| Imagen Docker | `docker build` y `docker run` en **GitHub Codespaces** (ver sección 12) | `evidencias.pdf` |
+| VM de Compute Engine | No se creó | Requiere activar la facturación de Google Cloud |
 
 Streamlit Community Cloud se actualiza solo con cada cambio en `main`. Codespaces es una máquina Linux en la nube con Docker; sirve para construir y ejecutar la misma imagen que se usaría en la VM. No usamos la VM porque activar la facturación de Google Cloud exige una autorización en tarjeta de crédito.
 
-## 15. Pruebas
-
-```bash
-pip install -r requirements-dev.txt
-python -m pytest -q
-```
-
-Verifican que `model.joblib` tiene los metadatos que usa la app, que la app responde a los tres casos de ejemplo con probabilidades en el rango esperado y que las cuatro pestañas se cargan sin errores.
-
-## 16. Notas de reproducibilidad
+## 15. Notas de reproducibilidad
 
 - `requirements.txt` fija versiones: un `model.joblib` solo carga de forma confiable con la **misma versión de scikit-learn** con que se entrenó. Si cambia alguna versión, ejecute de nuevo `python train.py`.
 - La imagen usa `python:3.12-slim`; el proyecto se probó con Python 3.12 y 3.13.
-- `.dockerignore` deja fuera `data/`, `notebooks/`, `docs/` y `tests/`: el contenedor solo necesita `app.py`, `model.joblib` y las dependencias.
+- `.dockerignore` deja fuera `data/` y `evidencias.pdf`: el contenedor solo necesita `app.py`, `ui/`, `model.joblib` y las dependencias.
 - **Costos en GCP**: al terminar, detenga o elimine la VM (`Compute Engine → Instancias de VM → Detener/Borrar`).
 
-## 17. Autoras
+## 16. Autoras
 
 - Allison Loango — [allison.loango@est.uexternado.edu.co](mailto:allison.loango@est.uexternado.edu.co)
 - Angie Loango — [angie.loango@est.uexternado.edu.co](mailto:angie.loango@est.uexternado.edu.co)
 
 Universidad Externado de Colombia, Ciencia de Datos.
 
-## 18. Uso de inteligencia artificial
+## 17. Uso de inteligencia artificial
 
 Usamos **Claude** (Anthropic) principalmente para el diseño visual de la página, y también como asistente para escribir y revisar código y documentación. Las decisiones del proyecto y la verificación de los resultados son de las autoras.
-
-## 19. Estado de la entrega
-
-El checklist de la guía (secciones 32 y 34), con lo que está hecho y dónde está la evidencia, está en [`docs/checklist_entrega.md`](docs/checklist_entrega.md).

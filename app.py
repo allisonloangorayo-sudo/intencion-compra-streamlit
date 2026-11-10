@@ -618,7 +618,7 @@ def render_project_tab(artifact: dict) -> None:
         "# Abrir http://localhost:8501",
         language="bash",
     )
-    explain(f'Código, cuaderno de Colab y guía paso a paso en <a href="{REPO_URL}" target="_blank">GitHub</a>.')
+    explain(f'Código e instrucciones en <a href="{REPO_URL}" target="_blank">GitHub</a>.')
 
 
 # ---------------------------------------------------------------------------
