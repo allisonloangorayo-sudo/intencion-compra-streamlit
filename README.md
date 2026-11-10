@@ -124,7 +124,6 @@ intencion-compra-streamlit/
 │   └── 01_desarrollo_colab.ipynb   # Exploración, entrenamiento y prueba de la app en Colab
 ├── scripts/
 │   └── docker_demo.sh      # build + run + ps + logs en un solo comando
-├── .devcontainer/          # Configuración de GitHub Codespaces (Docker y puerto 8501)
 ├── tests/
 │   └── test_app.py         # Pruebas del artefacto y de la app con 3 casos
 └── docs/
@@ -178,7 +177,7 @@ docker logs intencion-compra
 
 Abrir `http://IP_EXTERNA_DE_LA_VM:8501` (requiere la regla de firewall del puerto 8501; ver `docs/GUIA_PASO_A_PASO.md`, fase 4).
 
-**Sin VM: GitHub Codespaces (gratis, sin tarjeta).** El repositorio trae `.devcontainer/`, así que el Codespace abre con Docker instalado y el puerto 8501 configurado.
+**Sin VM: GitHub Codespaces (gratis, sin tarjeta).** El Codespace estándar de GitHub ya trae Docker instalado.
 
 1. En este repositorio: botón verde **Code → Codespaces → Create codespace on main**.
 2. En la terminal del Codespace:

@@ -34,7 +34,7 @@ Estado de cada punto de la guía. ✅ hecho · ⏳ pendiente (lo hacen las autor
 | `requirements.txt`, `Dockerfile`, `.dockerignore` | ✅ | raíz del repo |
 | El repositorio tiene todos los archivos | ✅ | ver README §8 |
 | VM creada y acceso por SSH | ⚠️ | sin facturación en Google Cloud; se usa GitHub Codespaces (Linux en la nube con terminal en el navegador) |
-| Docker instalado | ✅ | `.devcontainer/` instala Docker en el Codespace |
+| Docker instalado | ✅ | el Codespace estándar de GitHub ya lo trae (`docker --version`) |
 | `docker build` termina bien | ⏳ | captura `02_docker_build.png` |
 | `docker run` deja el contenedor activo | ⏳ | captura `03_docker_ps.png` |
 | `docker logs` sin errores críticos | ⏳ | captura `04_docker_logs.png` |
